@@ -1,23 +1,30 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 
+	"github.com/JZXHanta/chirpy/internal/database"
 	"github.com/go-chi/chi/v5"
 )
 
 type apiConfig struct {
 	fileserverHits int
+	DB             *database.DB
 }
 
 func main() {
 	const filepathRoot = "."
-	const port = "42069"
+	const port = "8080"
+
+	db, err := database.NewDB("database.json")
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	apiCfg := apiConfig{
 		fileserverHits: 0,
+		DB:             db,
 	}
 
 	router := chi.NewRouter()
@@ -27,9 +34,14 @@ func main() {
 
 	apiRouter := chi.NewRouter()
 	apiRouter.Get("/healthz", handlerReadiness)
-	apiRouter.Get("/metrics", apiCfg.handlerMetrics)
 	apiRouter.Get("/reset", apiCfg.handlerReset)
+	apiRouter.Post("/chirps", apiCfg.handlerChirpsCreate)
+	apiRouter.Get("/chirps", apiCfg.handlerChirpsRetrieve)
 	router.Mount("/api", apiRouter)
+
+	adminRouter := chi.NewRouter()
+	adminRouter.Get("/metrics", apiCfg.handlerMetrics)
+	router.Mount("/admin", adminRouter)
 
 	corsMux := middlewareCors(router)
 
@@ -38,20 +50,6 @@ func main() {
 		Handler: corsMux,
 	}
 
-	log.Printf("Serving on port: %s\n", port)
+	log.Printf("Serving files from %s on port: %s\n", filepathRoot, port)
 	log.Fatal(srv.ListenAndServe())
-
-}
-
-func (cfg *apiConfig) handlerMetrics(w http.ResponseWriter, r *http.Request) {
-	w.Header().Add("Content-Type", "text/plain; charset=utf-8")
-	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(fmt.Sprintf("Hits: %d", cfg.fileserverHits)))
-}
-
-func (cfg *apiConfig) middlewareMetricsInc(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		cfg.fileserverHits++
-		next.ServeHTTP(w, r)
-	})
 }
