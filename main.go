@@ -15,7 +15,7 @@ type apiConfig struct {
 
 func main() {
 	const filepathRoot = "."
-	const port = "8080"
+	const port = "42069"
 
 	db, err := database.NewDB("database.json")
 	if err != nil {
