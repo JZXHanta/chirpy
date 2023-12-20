@@ -2,7 +2,6 @@ package main
 
 import (
 	"flag"
-	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -22,10 +21,9 @@ func main() {
 	const filepathRoot = "."
 	const port = "8080"
 
-	godotenv.Load(`C:\Users\Hunter\Documents\chirpy\.env`)
+	godotenv.Load(".env")
 
 	jwtSecret := os.Getenv("JWT_SECRET")
-	fmt.Print(jwtSecret)
 	if jwtSecret == "" {
 		log.Fatal("JWT_SECRET environment variable is not set")
 	}
@@ -59,6 +57,8 @@ func main() {
 	apiRouter.Get("/healthz", handlerReadiness)
 	apiRouter.Get("/reset", apiCfg.handlerReset)
 
+	apiRouter.Post("/revoke", apiCfg.handlerRevoke)
+	apiRouter.Post("/refresh", apiCfg.handlerRefresh)
 	apiRouter.Post("/login", apiCfg.handlerLogin)
 
 	apiRouter.Post("/users", apiCfg.handlerUsersCreate)
