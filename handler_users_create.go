@@ -10,16 +10,10 @@ import (
 )
 
 type User struct {
-<<<<<<< HEAD
 	ID          int    `json:"id"`
 	Email       string `json:"email"`
 	Password    string `json:"-"`
 	IsChirpyRed bool   `json:"is_chirpy_red"`
-=======
-	ID       int    `json:"id"`
-	Email    string `json:"email"`
-	Password string `json:"-"`
->>>>>>> c7d63917131f0b218b5d9ade923c3033151b47e7
 }
 
 func (cfg *apiConfig) handlerUsersCreate(w http.ResponseWriter, r *http.Request) {
@@ -58,14 +52,9 @@ func (cfg *apiConfig) handlerUsersCreate(w http.ResponseWriter, r *http.Request)
 
 	respondWithJSON(w, http.StatusCreated, response{
 		User: User{
-<<<<<<< HEAD
 			ID:          user.ID,
 			Email:       user.Email,
 			IsChirpyRed: user.IsChirpyRed,
-=======
-			ID:    user.ID,
-			Email: user.Email,
->>>>>>> c7d63917131f0b218b5d9ade923c3033151b47e7
 		},
 	})
 }

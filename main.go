@@ -15,35 +15,24 @@ type apiConfig struct {
 	fileserverHits int
 	DB             *database.DB
 	jwtSecret      string
-<<<<<<< HEAD
 	polkaKey       string
-=======
->>>>>>> c7d63917131f0b218b5d9ade923c3033151b47e7
 }
 
 func main() {
 	const filepathRoot = "."
-<<<<<<< HEAD
 
 	godotenv.Load(".env")
 
 	port := os.Getenv("PORT")
 
-=======
-	const port = "8080"
-
-	godotenv.Load(".env")
-
->>>>>>> c7d63917131f0b218b5d9ade923c3033151b47e7
 	jwtSecret := os.Getenv("JWT_SECRET")
 	if jwtSecret == "" {
 		log.Fatal("JWT_SECRET environment variable is not set")
 	}
-<<<<<<< HEAD
-
 	polkaKey := os.Getenv("POLKA_KEY")
-=======
->>>>>>> c7d63917131f0b218b5d9ade923c3033151b47e7
+	if polkaKey == "" {
+		log.Fatal("POLKA_KEY environment variable is not set")
+	}
 
 	db, err := database.NewDB("database.json")
 	if err != nil {
@@ -63,10 +52,7 @@ func main() {
 		fileserverHits: 0,
 		DB:             db,
 		jwtSecret:      jwtSecret,
-<<<<<<< HEAD
 		polkaKey:       polkaKey,
-=======
->>>>>>> c7d63917131f0b218b5d9ade923c3033151b47e7
 	}
 
 	router := chi.NewRouter()
@@ -78,11 +64,8 @@ func main() {
 	apiRouter.Get("/healthz", handlerReadiness)
 	apiRouter.Get("/reset", apiCfg.handlerReset)
 
-<<<<<<< HEAD
 	apiRouter.Post("/polka/webhooks", apiCfg.handlerWebhook)
 
-=======
->>>>>>> c7d63917131f0b218b5d9ade923c3033151b47e7
 	apiRouter.Post("/revoke", apiCfg.handlerRevoke)
 	apiRouter.Post("/refresh", apiCfg.handlerRefresh)
 	apiRouter.Post("/login", apiCfg.handlerLogin)
@@ -90,10 +73,7 @@ func main() {
 	apiRouter.Post("/users", apiCfg.handlerUsersCreate)
 	apiRouter.Put("/users", apiCfg.handlerUsersUpdate)
 
-<<<<<<< HEAD
 	apiRouter.Delete("/chirps/{chirpID}", apiCfg.handlerChirpsDelete)
-=======
->>>>>>> c7d63917131f0b218b5d9ade923c3033151b47e7
 	apiRouter.Post("/chirps", apiCfg.handlerChirpsCreate)
 	apiRouter.Get("/chirps", apiCfg.handlerChirpsRetrieve)
 	apiRouter.Get("/chirps/{chirpID}", apiCfg.handlerChirpsGet)
